@@ -1,16 +1,14 @@
 import React from "react";
-import {allCompetitions, CompetitionProps} from "../App";
+import {allCompetitions, CompetitionProps, CompetitionsUpdateActionType} from "../App";
 import {Checkbox, FormControlLabel, List, ListItem} from "@mui/material";
 
-function CompetitionSelection({competitions, setCompetitions}: CompetitionProps) {
+function CompetitionSelection({competitionsState, dispatch}: CompetitionProps) {
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>, competition: number) => {
-        if (!event.target.checked) {
-            setCompetitions(competitions.filter((competitionIterator) => competitionIterator !== competition));
+        if (event.target.checked) {
+            dispatch({type: CompetitionsUpdateActionType.ADD, competition});
         } else {
-            const newCompetitionsList: Array<number> = Object.assign([], competitions);
-            newCompetitionsList.push(competition);
-            setCompetitions(newCompetitionsList);
+            dispatch({type: CompetitionsUpdateActionType.REMOVE, competition});
         }
     }
 
@@ -20,7 +18,7 @@ function CompetitionSelection({competitions, setCompetitions}: CompetitionProps)
                 return (
                     <ListItem key={competition}>
                         <FormControlLabel control={
-                            <Checkbox checked={competitions.includes(competition)}
+                            <Checkbox checked={competitionsState.competitions.includes(competition)}
                                       onChange={(event) => handleChange(event, competition)} />
                         } label={competition} />
                     </ListItem>

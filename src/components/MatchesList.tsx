@@ -3,12 +3,13 @@ import {useEffect} from "react";
 import {getMatchesFromApi} from "../api/GetMatchesFromApi";
 import {List, ListItem} from "@mui/material";
 
-function MatchesList({matches, setMatches, competitions}: MatchesProps & CompetitionProps) {
+function MatchesList({matches, setMatches, competitionsState}: MatchesProps & CompetitionProps) {
 
     useEffect(() => {
-        console.log("Fetching");
-        getMatchesFromApi(competitions).then(matches => setMatches(matches));
-    }, [competitions, setMatches]);
+        getMatchesFromApi(competitionsState.competitions).then(newMatches => {
+            setMatches(newMatches);
+        });
+    }, [competitionsState, setMatches]);
 
     return (
         <List>
