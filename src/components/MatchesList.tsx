@@ -1,9 +1,10 @@
-import {CompetitionProps, MatchesProps} from "../App";
 import {useEffect} from "react";
 import {getMatchesFromApi} from "../api/GetMatchesFromApi";
 import {List, ListItem} from "@mui/material";
+import {useCompetitionsAndMatchesContext} from "../App";
 
-function MatchesList({matches, setMatches, competitions}: MatchesProps & CompetitionProps) {
+function MatchesList() {
+    const {competitions, matches, setMatches} = useCompetitionsAndMatchesContext();
 
     useEffect(() => {
         console.log("Fetching");
