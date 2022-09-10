@@ -43,5 +43,8 @@ export async function getMatchesFromApi(competitions: Array<number>): Promise<Ar
             let matchesResponse: MatchesResponse = plainToClass(MatchesResponse, json as Object);
             return matchesResponse.matches;
         })
-        .flatMap(matches => matches);
+        .flatMap(matches => matches)
+        .sort(function(x: Match, y: Match) {
+            return new Date(x.utcDate).getTime() - new Date(y.utcDate).getTime()
+        });
 }
