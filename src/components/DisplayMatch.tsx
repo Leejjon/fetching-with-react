@@ -7,7 +7,7 @@ export interface MatchProps {
 
 function DisplayMatch({match}: MatchProps) {
     return (
-        <ListItem key={match.id}>{match.homeTeam.shortName} - {match.awayTeam.shortName}</ListItem>
+        <ListItem>{match.homeTeam.shortName} - {match.awayTeam.shortName}</ListItem>
     );
 }
 
