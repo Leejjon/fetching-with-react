@@ -22,25 +22,29 @@ export class MatchesResponse {
     }
 }
 
-export async function getMatchesFromApi(competition: number): Promise<Array<Match>> {
-    // const fetchOptions: RequestInit = {
-    //     method: 'GET',
-    //     headers: {
-    //         'X-Auth-Token': footballDataKey
-    //     }
-    // }
-    // const response = await fetch(`http://localhost:3000/v4/competitions/${competition}/matches`, fetchOptions);
-    //
-    // if (response.status === 200) {
-    //     const json = response.json();
-    //     let matchesResponse: MatchesResponse = plainToClass(MatchesResponse, json as Object);
-    //     return matchesResponse.matches.sort(function(x: Match, y: Match) {
-    //         return new Date(x.utcDate).getTime() - new Date(y.utcDate).getTime()
-    //     });
-    // } else {
-    //     return [];
-    // }
-    console.log("Fetching again: " + new Date().getTime());
-    await new Promise(f => setTimeout(f, 1000));
-    return [];
+export async function getMatchesFromApi(competitions: Array<number>): Promise<Array<Match>> {
+    const fetchOptions: RequestInit = {
+        method: 'GET',
+        headers: {
+            'X-Auth-Token': footballDataKey
+        }
+    }
+    let promises = competitions.map((competition: number) => {
+        return fetch(`http://localhost:3000/v4/competitions/${competition}/matches`,
+            fetchOptions
+        );
+    });
+
+    let resolvedPromises = await Promise.all(promises);
+    let resolvedJson = await Promise.all(resolvedPromises.filter(r => r.status === 200).map(r => r.json()));
+
+    return resolvedJson
+        .map((json) => {
+            let matchesResponse: MatchesResponse = plainToClass(MatchesResponse, json as Object);
+            return matchesResponse.matches;
+        })
+        .flatMap(matches => matches)
+        .sort(function(x: Match, y: Match) {
+            return new Date(x.utcDate).getTime() - new Date(y.utcDate).getTime()
+        });
 }
