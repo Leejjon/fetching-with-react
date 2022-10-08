@@ -16,6 +16,7 @@ export const allCompetitions = [2003, 2021];
 const matchesQueryClient = new QueryClient();
 
 function App() {
+    const [eredivisie, setEredivisie] = useState(true);
     const [competitions, setCompetitions] = useState<Array<number>>(allCompetitions);
     return (
         <div className="App">
