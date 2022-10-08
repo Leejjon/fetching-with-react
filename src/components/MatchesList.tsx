@@ -21,7 +21,7 @@ function MatchesList({competitions}: CompetitionProps) {
     useEffect(() => {
         for (let competition of allCompetitions) {
             if (!competitions.includes(competition)) {
-                queryClient.resetQueries([2003], {exact: true});
+                queryClient.resetQueries([competition], {exact: true});
             } else {
                 // Refetching is not needed.
                 // queryResult.refetch({
