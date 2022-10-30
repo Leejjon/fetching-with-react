@@ -4,13 +4,14 @@ import {getMatchesFromApi, Match} from "../api/GetMatchesFromApi";
 import {List} from "@mui/material";
 import {
     QueryKey,
-    useQueries,
+    useQueries, useQueryClient,
     UseQueryOptions, UseQueryResult
 } from "@tanstack/react-query";
 import DisplayMatch from "./DisplayMatch";
 
 
-function MatchesList({competitions}: CompetitionProps) {
+function MatchesList({competitions, setCompetitions}: CompetitionProps) {
+    const queryClient = useQueryClient();
     const userQueries: UseQueryResult<Match[], unknown>[] = useQueries({
         queries: allCompetitions.map<UseQueryOptions<Match[], unknown, unknown, QueryKey>>((competition: number) => {
             return {
@@ -27,37 +28,46 @@ function MatchesList({competitions}: CompetitionProps) {
     });
 
     const [matches, setMatches] = useState<Array<Match>>([]);
-    const [list, setList] = useState<Array<string>>([]);
-    // const isLoading: boolean = userQueries.some(result => result.isLoading);
+    const isLoading: boolean = userQueries.every(query => query.isSuccess);
 
     useEffect(() => {
-        userQueries.forEach((queryResult) => {
-                const {isLoading, isFetching, data} = queryResult;
-                if (!isLoading && !isFetching) {
-                    const thisMatches = data as Match[];
-                    const sortedMatches: Match[] = thisMatches
-                        .flatMap(matches => matches)
-                        .sort(function (x: Match, y: Match) {
-                            return new Date(x.utcDate).getTime() - new Date(y.utcDate).getTime()
-                        });
-                    setMatches(matches.concat(sortedMatches));
-                }
-            }
-        );
-    }, [setMatches]);
+        if (isLoading) {
+            let newMatches = userQueries.map((queryResult) => {
+                const {data} = queryResult;
+                return data as Match[];
+            }).flatMap(matches => matches).sort(function (x: Match, y: Match) {
+                return new Date(x.utcDate).getTime() - new Date(y.utcDate).getTime()
+            });
+            setMatches(newMatches);
+        }
+    }, [isLoading]);
 
-    return (
-        <>
-            <h1>{userQueries.length}</h1>
-            <List>
-            {matches.map((match) => {
-               return (
-                   <DisplayMatch key={"match-" + match.id} match={match}/>
-               );
-            })}
-            </List>
-        </>
-    );
+    useEffect(() => {
+        for (let competition of allCompetitions) {
+            if (!competitions.includes(competition)) {
+                queryClient.resetQueries(['competition', competition], {exact: true});
+            } else {
+
+            }
+        }
+    }, [competitions]);
+
+    if (matches.length === 0) {
+        return (<div>No matches</div>);
+    } else {
+        return (
+            <>
+                <h1>{userQueries.length}</h1>
+                <List>
+                    {matches.map((match) => {
+                        return (
+                            <DisplayMatch key={"match-" + match.id} match={match}/>
+                        );
+                    })}
+                </List>
+            </>
+        );
+    }
 }
 
 
