@@ -27,37 +27,16 @@ function MatchesList({competitions, setCompetitions}: CompetitionProps) {
         })
     });
 
-    const [matches, setMatches] = useState<Array<Match>>([]);
-    const isLoading: boolean = userQueries.every(query => query.isSuccess);
-
-    useEffect(() => {
-        if (isLoading) {
-            let newMatches = userQueries.map((queryResult) => {
-                const {data} = queryResult;
-                return data as Match[];
-            }).flatMap(matches => matches).sort(function (x: Match, y: Match) {
-                return new Date(x.utcDate).getTime() - new Date(y.utcDate).getTime()
-            });
-            setMatches(newMatches);
-        }
-    }, [isLoading]);
-
-    useEffect(() => {
-        for (let competition of allCompetitions) {
-            if (!competitions.includes(competition)) {
-                queryClient.resetQueries(['competition', competition], {exact: true});
-            } else {
-
-            }
-        }
-    }, [competitions]);
-
-    if (matches.length === 0) {
-        return (<div>No matches</div>);
-    } else {
+    if (userQueries.every(query => query.isSuccess)) {
+        const matches = userQueries.map((queryResult) => {
+            const {data} = queryResult;
+            return data as Match[];
+        }).flatMap(matches => matches).sort(function (x: Match, y: Match) {
+            return new Date(x.utcDate).getTime() - new Date(y.utcDate).getTime()
+        });
         return (
             <>
-                <h1>{userQueries.length}</h1>
+                <h1>{matches.length}</h1>
                 <List>
                     {matches.map((match) => {
                         return (
@@ -67,7 +46,56 @@ function MatchesList({competitions, setCompetitions}: CompetitionProps) {
                 </List>
             </>
         );
+    } else {
+        return (<div>No matches</div>);
     }
+
+    // const [matches, setMatches] = useState<Array<Match>>([]);
+    // const doneLoading: boolean = userQueries.every(query => query.isSuccess);
+    // const [reloading, setReloading] = useState(false);
+    //
+    // useEffect(() => {
+    //     for (let competition of allCompetitions) {
+    //         if (!competitions.includes(competition)) {
+    //             console.log("Resetting competition");
+    //             queryClient.resetQueries(['competition', competition], {exact: true});
+    //             setReloading(true);
+    //         }
+    //     }
+    // }, [competitions]);
+    //
+    // useEffect(() => {
+    //     console.log("doneLoading: " + doneLoading)
+    // }, [doneLoading]);
+    //
+    // useEffect(() => {
+    //     if (doneLoading && !reloading) {
+    //         const newMatches = userQueries.map((queryResult) => {
+    //             const {data} = queryResult;
+    //             return data as Match[];
+    //         }).flatMap(matches => matches).sort(function (x: Match, y: Match) {
+    //             return new Date(x.utcDate).getTime() - new Date(y.utcDate).getTime()
+    //         });
+    //         setMatches(newMatches);
+    //     }
+    // }, [doneLoading, reloading]);
+    //
+    // if (matches.length === 0) {
+    //     return (<div>No matches</div>);
+    // } else {
+    //     return (
+    //         <>
+    //             <h1>{matches.length}</h1>
+    //             <List>
+    //                 {matches.map((match) => {
+    //                     return (
+    //                         <DisplayMatch key={"match-" + match.id} match={match}/>
+    //                     );
+    //                 })}
+    //             </List>
+    //         </>
+    //     );
+    // }
 }
 
 
