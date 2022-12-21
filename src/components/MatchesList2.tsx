@@ -6,9 +6,11 @@ import {List, ListItem, Typography} from "@mui/material";
 function MatchesList({matches, setMatches, competitions}: MatchesProps & CompetitionProps) {
 
     useEffect(() => {
-        console.log("Fetching");
-        getMatchesFromApi(competitions).then(matches => setMatches(matches));
-    }, [competitions, setMatches]);
+        if (!matches || matches.length === 0) {
+            console.log("Fetching");
+            getMatchesFromApi(competitions).then(matches => setMatches(matches));
+        }
+    }, [competitions, matches, setMatches]);
 
     return (
         <>

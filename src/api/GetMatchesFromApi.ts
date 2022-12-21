@@ -23,20 +23,25 @@ class MatchesResponse {
 }
 
 export async function getMatchesFromApi(competitions: Array<number>): Promise<Array<Match>> {
+    
     const fetchOptions: RequestInit = {
         method: 'GET',
         headers: {
             'X-Auth-Token': footballDataKey
         }
     }
+
     let promises = competitions.map((competition: number) => {
         return fetch(`http://localhost:3000/v4/competitions/${competition}/matches`,
             fetchOptions
         );
     });
 
+
     let resolvedPromises = await Promise.all(promises);
     let resolvedJson = await Promise.all(resolvedPromises.filter(r => r.status === 200).map(r => r.json()));
+
+    
 
     return resolvedJson
         .map((json) => {

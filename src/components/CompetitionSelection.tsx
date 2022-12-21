@@ -2,15 +2,15 @@ import React from "react";
 import {allCompetitions, CompetitionProps} from "../App";
 import {Checkbox, FormControlLabel, List, ListItem, Typography} from "@mui/material";
 
-function CompetitionSelection({competitions, setCompetitions}: CompetitionProps) {
+function CompetitionSelection({competitions, onCompetitionChanged}: CompetitionProps) {
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>, competition: number) => {
         if (!event.target.checked) {
-            setCompetitions(competitions.filter((competitionIterator) => competitionIterator !== competition));
+            onCompetitionChanged(competitions.filter((competitionIterator) => competitionIterator !== competition));
         } else {
             const newCompetitionsList: Array<number> = Object.assign([], competitions);
             newCompetitionsList.push(competition);
-            setCompetitions(newCompetitionsList);
+            onCompetitionChanged(newCompetitionsList);
         }
     }
 
