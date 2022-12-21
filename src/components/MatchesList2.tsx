@@ -11,7 +11,6 @@ function MatchesList({matches, setMatches, competitions}: MatchesProps & Competi
             getMatchesFromApi(competitions).then(matches => setMatches(matches));
         }
     }, [competitions, matches, setMatches]);
-    
 
     return (
         <>
