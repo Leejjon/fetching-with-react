@@ -1,6 +1,6 @@
 import React from "react";
 import {allCompetitions, CompetitionProps} from "../App";
-import {Checkbox, FormControlLabel, List, ListItem} from "@mui/material";
+import {Checkbox, FormControlLabel, List, ListItem, Typography} from "@mui/material";
 
 function CompetitionSelection({competitions, setCompetitions}: CompetitionProps) {
 
@@ -15,18 +15,21 @@ function CompetitionSelection({competitions, setCompetitions}: CompetitionProps)
     }
 
     return (
-        <List>
-            {allCompetitions.map((competition: number) => {
-                return (
-                    <ListItem key={competition}>
-                        <FormControlLabel control={
-                            <Checkbox checked={competitions.includes(competition)}
-                                      onChange={(event) => handleChange(event, competition)} />
-                        } label={competition} />
-                    </ListItem>
-                )
-            })}
-        </List>
+        <>
+            <Typography variant="body1" align="left">Competitions</Typography>
+            <List>
+                {allCompetitions.map((competition: number) => {
+                    return (
+                        <ListItem key={competition}>
+                            <FormControlLabel control={
+                                <Checkbox checked={competitions.includes(competition)}
+                                          onChange={(event) => handleChange(event, competition)} />
+                            } label={competition} />
+                        </ListItem>
+                    )
+                })}
+            </List>
+        </>
     );
 }
 
