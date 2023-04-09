@@ -1,11 +1,8 @@
 import React, {useState} from 'react';
 import './App.css';
-import CompetitionSelection from "./components/CompetitionSelection";
 import {Match} from "./api/GetMatchesFromApi";
-import MatchesList from "./components/MatchesList";
-import {BrowserRouter, Link, Route, Routes} from "react-router-dom";
-import Home from "./components/Home";
-import MatchesList2 from "./components/MatchesList2";
+import {NavLink, Outlet} from "react-router-dom";
+import {routes} from "./routing/Routes";
 
 export interface CompetitionProps {
     competitions: Array<number>;
@@ -21,23 +18,19 @@ export const allCompetitions = [2003, 2021];
 
 function App() {
     const [competitions, setCompetitions] = useState<Array<number>>(allCompetitions);
-    const [matches, setMatches] = useState<Array<Match>>([]);
+
     return (
         <div className="App">
-            <BrowserRouter>
-                <Link to="/">Home</Link>
-                <Link to="/competitions">Competitions</Link>
-                <Link to="/matches">Matches</Link>
-                <Link to="/matches2">Matches2</Link>
-                <br />
-
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/competitions" element={<CompetitionSelection competitions={competitions} setCompetitions={setCompetitions} />}/>
-                    <Route path="/matches" element={<MatchesList matches={matches} setMatches={setMatches} competitions={competitions} setCompetitions={setCompetitions}/>}/>
-                    <Route path="/matches2" element={<MatchesList2 matches={matches} setMatches={setMatches} competitions={competitions} setCompetitions={setCompetitions}/>}/>
-                </Routes>
-            </BrowserRouter>
+            <nav>
+                {Object.entries(routes).map((route) => {
+                    const [key, value] = route;
+                    return (<NavLink key={key} to={key} className={({ isActive, isPending }) =>
+                        isActive ? "active" : isPending ? "pending" : ""
+                    }>{value.title}</NavLink>);
+                })}
+            </nav>
+            {/*https://stackoverflow.com/questions/70027979/passing-props-to-outlet-when-nestining-routes-in-react-router-v6*/}
+            <Outlet />
         </div>
     );
 }

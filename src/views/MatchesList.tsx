@@ -1,15 +1,10 @@
-import {CompetitionProps, MatchesProps} from "../App";
-import React, {useEffect} from "react";
-import {getMatchesFromApi} from "../api/GetMatchesFromApi";
+import React from "react";
 import {List, ListItem, Typography} from "@mui/material";
+import {Match} from "../api/GetMatchesFromApi";
+import { useLoaderData } from 'react-router-dom';
 
-function MatchesList({matches, setMatches, competitions}: MatchesProps & CompetitionProps) {
-
-    useEffect(() => {
-        console.log("Fetching");
-        getMatchesFromApi(competitions).then(matches => setMatches(matches));
-    }, [competitions, setMatches]);
-
+function MatchesList() {
+    const matches: Array<Match> = useLoaderData() as Array<Match>;
     return (
         <>
             <Typography variant="body1" align="left">Matches</Typography>

@@ -1,22 +1,24 @@
 import React from "react";
-import {allCompetitions, CompetitionProps} from "../App";
+import {allCompetitions} from "../App";
 import {Checkbox, FormControlLabel, List, ListItem, Typography} from "@mui/material";
 
-function CompetitionSelection({competitions, setCompetitions}: CompetitionProps) {
+function CompetitionSelection(/*{competitions, setCompetitions}: CompetitionProps*/) {
+
+    const competitions = allCompetitions; // Temporary
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>, competition: number) => {
-        if (!event.target.checked) {
-            setCompetitions(competitions.filter((competitionIterator) => competitionIterator !== competition));
-        } else {
-            const newCompetitionsList: Array<number> = Object.assign([], competitions);
-            newCompetitionsList.push(competition);
-            setCompetitions(newCompetitionsList);
-        }
+        // if (!event.target.checked) {
+        //     setCompetitions(competitions.filter((competitionIterator) => competitionIterator !== competition));
+        // } else {
+        //     const newCompetitionsList: Array<number> = Object.assign([], competitions);
+        //     newCompetitionsList.push(competition);
+        //     setCompetitions(newCompetitionsList);
+        // }
     }
 
     return (
-        <>
-            <Typography variant="body1" align="left">Competitions</Typography>
+        <div>
+            <Typography variant="body1">Competitions</Typography>
             <List>
                 {allCompetitions.map((competition: number) => {
                     return (
@@ -29,7 +31,7 @@ function CompetitionSelection({competitions, setCompetitions}: CompetitionProps)
                     )
                 })}
             </List>
-        </>
+        </div>
     );
 }
 
