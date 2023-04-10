@@ -4,7 +4,7 @@ import {allCompetitions} from "../App";
 
 export const matchesQuery = () => (
     {
-        queryKey: [2003],
+        queryKey: ["competitions"],
         queryFn: async () => { return await getMatchesFromApi(allCompetitions)},
     }
 );
