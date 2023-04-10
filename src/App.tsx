@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import './App.css';
-import {Match} from "./api/GetMatchesFromApi";
+import {getMatchesFromApi, Match} from "./api/GetMatchesFromApi";
 import {NavLink, Outlet} from "react-router-dom";
-import {routes} from "./routing/Routes";
+import {routes, SingleRouteInformationPair} from "./routing/Routes";
+import {QueryClient} from "@tanstack/react-query";
 
 export interface CompetitionProps {
     competitions: Array<number>;
@@ -15,6 +16,7 @@ export interface MatchesProps {
 }
 
 export const allCompetitions = [2003, 2021];
+
 
 function App() {
     const [competitions, setCompetitions] = useState<Array<number>>(allCompetitions);

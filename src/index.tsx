@@ -6,6 +6,11 @@ import reportWebVitals from './reportWebVitals';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import {getRouteInformation, RouteEnum, routes} from "./routing/Routes";
 import {NonIndexRouteObject} from "react-router/dist/lib/context";
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
+import {Match} from "./api/GetMatchesFromApi";
+
+const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -16,7 +21,13 @@ const rootRoute = getRouteInformation(RouteEnum.HOME);
 function generateNonIndexRouteObjects() {
     return Object.entries(routes).map((entry) => {
         const [key, value] = entry;
-        return {path: key, element: value.view, loader: value.loader} as NonIndexRouteObject
+
+        const loaderThatCanBeUndefined: ((queryClient: QueryClient) => Promise<Array<Match>>) | undefined = value.loader;
+        if (loaderThatCanBeUndefined) {
+            return {path: key, element: value.view, loader: () => { return loaderThatCanBeUndefined(queryClient)}} as NonIndexRouteObject
+        } else {
+            return {path: key, element: value.view} as NonIndexRouteObject
+        }
     });
 }
 
@@ -36,7 +47,10 @@ const router = createBrowserRouter([
 
 root.render(
   <React.StrictMode>
-      <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <ReactQueryDevtools position="bottom-right" />
+      </QueryClientProvider>
   </React.StrictMode>
 );
 

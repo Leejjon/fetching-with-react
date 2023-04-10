@@ -3,8 +3,10 @@ import Home from "../views/Home";
 import CompetitionSelection from "../views/CompetitionSelection";
 import MatchesList from "../views/MatchesList";
 import MatchesList2 from "../views/MatchesList2";
-import {getMatchesFromApi} from "../api/GetMatchesFromApi";
+import {getMatchesFromApi, Match} from "../api/GetMatchesFromApi";
 import {allCompetitions} from "../App";
+import {QueryClient} from "@tanstack/react-query";
+import {reactQueryLoader} from "../query/Query";
 
 export enum RouteEnum {
     HOME,
@@ -17,7 +19,7 @@ export interface RouteInformation {
     key: RouteEnum,
     title: string,
     view: JSX.Element,
-    loader: () => Promise<any> | null
+    loader?: (queryClient: QueryClient) => Promise<Array<Match>>
 }
 
 interface GenericRouteInformationPair {
@@ -30,10 +32,10 @@ export interface SingleRouteInformationPair {
 }
 
 export const routes: GenericRouteInformationPair = {
-    "/": {key: RouteEnum.HOME, title: "Home", view: <Home/>, loader: () => { return null }},
-    "/competitions": {key: RouteEnum.COMPETITIONS, title: "Competitions", view: <CompetitionSelection/>, loader: () => { return null }},
-    "/matches": {key: RouteEnum.MATCHESLIST1, title: "Matches 1", view: <MatchesList/>, loader: () => { return getMatchesFromApi(allCompetitions) }},
-    "/matches2": {key: RouteEnum.MATCHESLIST2, title: "Matches 2", view: <MatchesList2/>, loader: () => { return getMatchesFromApi(allCompetitions) }},
+    "/": {key: RouteEnum.HOME, title: "Home", view: <Home/>},
+    "/competitions": {key: RouteEnum.COMPETITIONS, title: "Competitions", view: <CompetitionSelection/>, loader: undefined},
+    "/matches": {key: RouteEnum.MATCHESLIST1, title: "Matches 1", view: <MatchesList/>, loader: reactQueryLoader },
+    "/matches2": {key: RouteEnum.MATCHESLIST2, title: "Matches 2", view: <MatchesList2/>, loader: reactQueryLoader }
 }
 
 export function getRouteInformation(routeEnum: RouteEnum): SingleRouteInformationPair {
