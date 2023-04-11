@@ -8,7 +8,6 @@ import {getRouteInformation, RouteEnum, routes} from "./routing/Routes";
 import {NonIndexRouteObject} from "react-router/dist/lib/context";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
-import {Match} from "./api/GetMatchesFromApi";
 
 const queryClient = new QueryClient();
 
@@ -21,13 +20,11 @@ const rootRoute = getRouteInformation(RouteEnum.HOME);
 function generateNonIndexRouteObjects() {
     return Object.entries(routes).map((entry) => {
         const [key, value] = entry;
-
-        const loaderThatCanBeUndefined: ((queryClient: QueryClient) => Promise<Array<Match>>) | undefined = value.loader;
-        if (loaderThatCanBeUndefined) {
-            return {path: key, element: value.view, loader: () => { return loaderThatCanBeUndefined(queryClient)}} as NonIndexRouteObject
-        } else {
-            return {path: key, element: value.view} as NonIndexRouteObject
-        }
+        const loader = value.loader;
+        return {
+            path: key, element: value.view,
+            loader: loader ? () => { return loader(queryClient) } : undefined
+        } as NonIndexRouteObject;
     });
 }
 
